@@ -2,6 +2,7 @@ const inquirer = require("inquirer");
 const cTable = require("console.table");
 const mysql = require("mysql2");
 const db = require("./db/connection");
+let allDepartments;
 
 const logo = `\x1b[95m
 
@@ -28,10 +29,21 @@ const logo = `\x1b[95m
 
 \x1b[0m`;
 
-const mainMenu = async () => {
+const updateServer = () => {
+  console.clear();
+  db.query("SELECT * FROM departments", function (error, res) {
+    allDepartments = res.map((department) => ({
+      name: department.departmentName,
+      value: department.id,
+    }));
+    allDepartments.push("Cancel");
+  });
+};
+
+const mainMenu = () => {
   console.clear();
   console.log(`${logo}`);
-  await inquirer
+  inquirer
     .prompt([
       {
         type: "list",
@@ -44,66 +56,77 @@ const mainMenu = async () => {
     .catch((error) => console.error(error));
 };
 
-const choiceHandler = async ({ options: choice }) => {
+const choiceHandler = ({ options: choice }) => {
   switch (choice) {
     case "View all departments":
-      await getAllDepartments();
+      getAllDepartments();
       break;
     case "Delete Department":
-      await deleteDepartmentHandler();
+      deleteDepartmentHandler();
       break;
   }
   if (choice !== "Quit") {
-    await againHandler();
+    againHandler();
   }
 };
 
-const getAllDepartments = async () => {
-  await db
-    .promise()
+const getAllDepartments = () => {
+  db.promise()
     .query(`SELECT * FROM departments`)
     .then(([rows]) => console.log(cTable.getTable(rows)))
     .catch((error) => console.log(error));
 };
-const createDepartmentsList = async () => {
+const createDepartmentsList = () => {
   let departments;
-  await db
-    .promise()
+  db.promise()
     .query(`SELECT departments.departmentName FROM departments`)
     .then(([rows]) => (departments = rows.map((row) => row.name)))
     .catch((error) => console.log(error));
   return departments;
 };
 
-const deleteDepartmentHandler = async () => {
-  let departments = await createDepartmentsList();
-  await inquirer
+const deleteDepartmentHandler = () => {
+  updateServer();
+  inquirer
     .prompt([
       {
         type: "list",
         name: "department",
         message: "Choose department to delete",
-        choices: departments,
+        choices: allDepartments,
       },
     ])
-    .then((choice) => deleteDepartment(choice))
+    .then(function (answer) {
+      if (answer.department === "Cancel") {
+        againHandler();
+      } else {
+        const sql = `DELETE FROM departments WHERE id = ?`;
+        const params = answer.department;
+        db.query(sql, params, (error, res) => {
+          if (error) throw error;
+        });
+        console.clear();
+        updateServer();
+        againHandler();
+      }
+    })
     .catch((error) => console.log(error));
 };
 
-const deleteDepartment = async ({ department }) => {
-  let departmentsArray;
-  await db
-    .promise()
-    .query(`SELECT * FROM departments WHERE name = '${department}'`)
-    .then(([rows]) => (departmentsArray = rows))
-    .catch((error) => console.log(error));
-  if (departmentsArray.length > 1) {
-    console.log(cTable.getTable(departmentsArray));
-  }
-};
+// const deleteDepartment = ({ department }) => {
+//   let departmentsArray;
+//    db
+//     .promise()
+//     .query(`SELECT * FROM departments WHERE name = '${department}'`)
+//     .then(([rows]) => (departmentsArray = rows))
+//     .catch((error) => console.log(error));
+//   if (departmentsArray.length > 1) {
+//     console.log(cTable.getTable(departmentsArray));
+//   }
+// };
 
-const againHandler = async () => {
-  await inquirer
+const againHandler = () => {
+  inquirer
     .prompt([
       {
         type: "confirm",
@@ -125,4 +148,5 @@ const exitApp = () => {
   db.end();
 };
 
+updateServer();
 mainMenu();
