@@ -27,3 +27,17 @@ const logo = `\x1b[95m
                     ████████▀█████████████
 
 \x1b[0m`;
+
+const mainMenu = async () => {
+await inquirer
+.prompt([
+    {
+        type: "list",
+        name: "options",
+        message: "Please make a selection",
+        choices: [
+            "View all departments",
+        ]
+    }
+])
+}

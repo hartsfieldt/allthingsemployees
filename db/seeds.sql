@@ -1,4 +1,4 @@
-INSERT INTO departments (name)
+INSERT INTO departments (departmentName)
 VALUES ("Management"),
     ("Administration"),
     ("Web Development"),
@@ -9,11 +9,11 @@ INSERT INTO roles (title, salary, department_id)
 VALUES ("CEO", "225000.00", 1),
     ("COO", "200000.00", 1),
     (
-        "Director of Sales and Marketing",
+        "Head of Sales and Marketing",
         "125000.00",
         1
     ),
-    ("HR Manager", "75000.00" 1),
+    ("HR Manager", "75000.00", 1),
     ("Accounting Manager", "75000.00", 1),
     ("Executive Assistant", "65000.00", 2),
     ("Support Staff", "50000.00", 2),
@@ -38,5 +38,5 @@ VALUES ("Scott", "Hartsfield", 1, 1),
     ("Saundra", "Lathan", 10, 3),
     ("Robert", "McKenleigh", 8, 2),
     ("Grace", "Sloop", 7, 2),
-    ("Dennis", "Horn", 4, 2);
+    ("Dennis", "Horn", 4, 2),
     ("Patrick", "MacDonald", 9, 2);
