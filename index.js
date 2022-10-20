@@ -146,7 +146,7 @@ const choiceHandler = async ({ options: choice }) => {
 const getAllDepartments = async () => {
   await db
     .promise()
-    .query(`SELECT id AS 'ID' departmentName AS 'Department' FROM departments`)
+    .query(`SELECT id AS 'ID', departmentName AS 'Department' FROM departments`)
     .then(([rows]) => console.log(cTable.getTable(rows)))
     .catch((error) => console.log(error));
 };
@@ -194,7 +194,7 @@ const getAllRoles = async () => {
       console.log(cTable.getTable(rows));
     })
     .catch((err) => console.log(err));
-  await againHandler();
+  await againHandler(); // making a duplicate
 };
 
 function deleteRoleHandler() {
