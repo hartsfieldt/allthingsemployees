@@ -75,12 +75,20 @@ const mainMenu = () => {
         name: "options",
         message: "Please make a selections",
         choices: [
-          "View all departments",
+          "View all Departments",
           "Delete Department",
           "View all Roles",
           "Delete Role",
           "View All Employees",
           "Delete an Employee",
+          "Add an Employee",
+          "Add a Role",
+          "Update an Employee Role",
+          "Updated an Employees Manager",
+          "View Employees by Department",
+          "View Employees by Manager",
+          "View Department Budget",
+          "Exit Menu",
         ],
       },
     ])
@@ -90,23 +98,44 @@ const mainMenu = () => {
 
 const choiceHandler = async ({ options: choice }) => {
   switch (choice) {
-    case "View all departments":
+    case "View all Departments":
       await getAllDepartments();
       break;
     case "Delete Department":
       await deleteDepartmentHandler();
       break;
-    case "Delete Role":
-      await deleteRoleHandler();
-      break;
     case "View all Roles":
       await getAllRoles();
+      break;
+    case "Delete Role":
+      await deleteRoleHandler();
       break;
     case "View all Employees":
       await getAllEmployees();
       break;
     case "Delete Employee":
       await deleteEmployee();
+      break;
+    case "Add an Employee":
+      await addEmployee();
+      break;
+    case "Add a Role":
+      await addRole();
+      break;
+    case "Update an Employee Role":
+      await updateRole();
+      break;
+    case "Update an Employee Mgr.":
+      await updateMgr();
+      break;
+    case "View Employee by Department":
+      await viewEmpDept();
+      break;
+    case "View Employee by Manager":
+      await viewEmpMgr();
+      break;
+    case "View Department Budget":
+      await viewDeptBudget();
       break;
   }
   if (choice !== "Quit") {
@@ -121,14 +150,6 @@ const getAllDepartments = async () => {
     .then(([rows]) => console.log(cTable.getTable(rows)))
     .catch((error) => console.log(error));
 };
-// const createDepartmentsList = () => {
-//   let departments;
-//   db.promise()
-//     .query(`SELECT departments.departmentName FROM departments`)
-//     .then(([rows]) => (departments = rows.map((row) => row.name)))
-//     .catch((error) => console.log(error));
-//   return departments;
-// };
 
 const deleteDepartmentHandler = async () => {
   await updateServer();
