@@ -64,6 +64,7 @@ const updateServer = async () => {
 };
 
 const mainMenu = () => {
+  updateServer();
   console.clear();
   console.log(`${logo}`);
   inquirer
@@ -128,9 +129,9 @@ const choiceHandler = async ({ options: choice }) => {
       await viewDeptBudget();
       break;
   }
-  if (choice !== "Quit") {
-    await againHandler();
-  }
+  // if (choice !== "Quit") {
+  //   await againHandler();
+  // }
 };
 
 const addDepartmentHandler = async () => {
@@ -157,7 +158,12 @@ const addDepartment = async ({ departmentName }) => {
   VALUES ("${departmentName}")
   `
     )
-    .then(console.log("The department was added."))
+    .then(() => {
+      console.log("The department was added.");
+      setTimeout(() => {
+        mainMenu();
+      }, 3000);
+    })
     .catch((err) => console.log(err));
 };
 
@@ -166,7 +172,12 @@ const getAllDepartments = async () => {
   await db
     .promise()
     .query(`SELECT id AS 'ID', departmentName AS 'Department' FROM departments`)
-    .then(([rows]) => console.log(cTable.getTable(rows)))
+    .then(([rows]) => {
+      console.log(cTable.getTable(rows));
+      setTimeout(() => {
+        againHandler();
+      }, 3000);
+    })
     .catch((error) => console.log(error));
 };
 
@@ -184,7 +195,7 @@ const deleteDepartmentHandler = async () => {
     ])
     .then((answer) => {
       if (answer.department === "Cancel") {
-        againHandler();
+        mainMenu();
       } else {
         const sql = `DELETE FROM departments WHERE id = ?`;
         const params = answer.department;
@@ -193,7 +204,9 @@ const deleteDepartmentHandler = async () => {
         });
         console.clear();
         console.log("Department Deleted");
-        updateServer();
+        setTimeout(() => {
+          mainMenu();
+        }, 3000);
       }
     })
     .catch((err) => console.log(err));
@@ -213,6 +226,9 @@ const getAllRoles = async () => {
     )
     .then(([rows]) => {
       console.log(cTable.getTable(rows));
+      setTimeout(() => {
+        againHandler();
+      }, 3000);
     })
     .catch((err) => console.log(err));
 };
@@ -243,6 +259,9 @@ const addRole = async () => {
       db.query(sql, (err, res) => {
         if (err) throw err;
         console.log("Role was added");
+        setTimeout(() => {
+          mainMenu();
+        }, 3000);
       });
     })
     .catch((err) => console.log(err));
@@ -250,7 +269,6 @@ const addRole = async () => {
 
 const deleteRoleHandler = async () => {
   console.clear();
-  await updateServer();
   await inquirer
     .prompt({
       type: "list",
@@ -267,9 +285,11 @@ const deleteRoleHandler = async () => {
         db.query(sql, params, (err, res) => {
           if (err) throw err;
         });
-        updateServer();
         console.clear();
         console.log("Role Deleted");
+        setTimeout(() => {
+          mainMenu();
+        }, 3000);
       }
     });
 };
@@ -296,6 +316,9 @@ const getAllEmployees = async () => {
     )
     .then(([rows]) => {
       console.log(cTable.getTable(rows));
+      setTimeout(() => {
+        againHandler();
+      }, 3000);
     })
     .catch((err) => console.log(err));
 };
@@ -331,6 +354,9 @@ const addEmployee = async () => {
       db.query(sql, params, (err, res) => {
         if (err) throw err;
         console.log("Employee was added");
+        setTimeout(() => {
+          mainMenu();
+        }, 3000);
       });
     });
 };
@@ -358,6 +384,9 @@ const updateMgr = async () => {
       db.query(sql, params, (err, res) => {
         if (err) throw err;
         console.log("The employees manager was changed successfully");
+        setTimeout(() => {
+          mainMenu();
+        }, 3000);
       });
     });
 };
@@ -376,15 +405,17 @@ const deleteEmployee = async () => {
     ])
     .then((answer) => {
       if (answer.employee === "Cancel") {
-        againHandler();
+        mainMenu();
       } else {
         const sql = `DELETE FROM employees WHERE id = ?`;
         const params = answer.employee;
         db.query(sql, params, (error, res) => {
           if (error) throw error;
+          console.log("Employee was deleted");
+          setTimeout(() => {
+            mainMenu();
+          }, 3000);
         });
-        console.clear();
-        updateServer();
       }
     })
     .catch((error) => console.log(error));
@@ -414,11 +445,14 @@ const viewDeptBudget = async () => {
       db.query(sql, params, (err, res) => {
         if (err) throw err;
         console.table(res);
+        setTimeout(() => {
+          againHandler();
+        }, 3000);
       });
     });
 };
 
-const againHandler = () => {
+function againHandler() {
   setTimeout(() => {
     inquirer
       .prompt([
@@ -436,12 +470,11 @@ const againHandler = () => {
         }
       });
   }, 3000);
-};
+}
 
 const exitApp = () => {
   console.log("Thank you for visiting our Employee Tracker!");
   process.exit(1);
 };
 
-updateServer();
 mainMenu();
