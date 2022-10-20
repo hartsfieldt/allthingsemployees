@@ -83,7 +83,7 @@ const mainMenu = () => {
           "Add a Role",
           "Add a Department",
           "Update an Employee Role",
-          "Updated an Employees Manager",
+          "Update an Employee Mgr.",
           "View Employees by Department",
           "View Employees by Manager",
           "View Department Budget",
@@ -302,6 +302,66 @@ const getAllEmployees = async () => {
       console.log(cTable.getTable(rows));
     })
     .catch((err) => console.log(err));
+};
+
+const addEmployee = async () => {
+  await inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "first_name",
+        message: "Enter the employees First Name",
+      },
+      {
+        type: "input",
+        name: "last_name",
+        message: "Enter the employees Last Name",
+      },
+      {
+        type: "list",
+        name: "employee_role",
+        message: "Enter the employees role",
+        choices: allRoles,
+      },
+    ])
+    .then((answer) => {
+      const sql = `INSERT INTO employees SET ?`;
+      const params = {
+        first_name: answer.first_name,
+        last_name: answer.last_name,
+        role_id: answer.employee_role,
+      };
+      db.query(sql, params, (err, res) => {
+        if (err) throw err;
+        console.log("Employee was added");
+      });
+    });
+};
+
+const updateMgr = async () => {
+  await inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employeeList",
+        message: "Choose the employee whose manager you would like to change",
+        choices: allEmployees,
+      },
+      {
+        type: "list",
+        name: "managerList",
+        message: "Choose a manager for the employee",
+        choices: allEmployees,
+      },
+    ])
+    .then((answer) => {
+      const sql = `UPDATE employees SET manager_id = ? WHERE id = ?`;
+      const params = [answer.managerList, answer.employeeList];
+      db.query(sql, params, (err, res) => {
+        if (err) throw err;
+        console.log("The employees manager was changed successfully");
+      });
+    });
 };
 
 const deleteEmployee = async () => {
