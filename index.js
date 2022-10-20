@@ -204,7 +204,7 @@ const deleteDepartmentHandler = async () => {
         againHandler();
       }
     })
-    .catch((error) => console.log(error));
+    .catch((err) => console.log(err));
 };
 
 const getAllRoles = async () => {
@@ -220,6 +220,36 @@ const getAllRoles = async () => {
     )
     .then(([rows]) => {
       console.log(cTable.getTable(rows));
+    })
+    .catch((err) => console.log(err));
+};
+
+const addRole = async () => {
+  await inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "roleName",
+        message: "Enter a Role name",
+      },
+      {
+        type: "number",
+        name: "salary",
+        message: "What is the salary for this role?",
+      },
+      {
+        type: "list",
+        name: "department",
+        message: "What department would you like to add this role to?",
+        choices: allDepartments,
+      },
+    ])
+    .then((answer) => {
+      const sql = `INSERT INTO roles (title, salary, department_id) VALUES ("${answer.roleName}", "${answer.salary}", "${answer.department}");`;
+      db.query(sql, (err, res) => {
+        if (err) throw err;
+        console.log("Role was added");
+      });
     })
     .catch((err) => console.log(err));
 };
