@@ -82,10 +82,7 @@ const mainMenu = () => {
           "Add an Employee",
           "Add a Role",
           "Add a Department",
-          "Update an Employee Role",
           "Update an Employee Mgr.",
-          "View Employees by Department",
-          "View Employees by Manager",
           "View Department Budget",
           "Exit Menu",
         ],
@@ -124,17 +121,8 @@ const choiceHandler = async ({ options: choice }) => {
     case "Add a Department":
       await addDepartmentHandler();
       break;
-    case "Update an Employee Role":
-      await updateRole();
-      break;
     case "Update an Employee Mgr.":
       await updateMgr();
-      break;
-    case "View Employee by Department":
-      await viewEmpDept();
-      break;
-    case "View Employee by Manager":
-      await viewEmpMgr();
       break;
     case "View Department Budget":
       await viewDeptBudget();
@@ -200,8 +188,8 @@ const deleteDepartmentHandler = async () => {
           if (error) throw error;
         });
         console.clear();
+        console.log("Department Deleted");
         updateServer();
-        againHandler();
       }
     })
     .catch((err) => console.log(err));
@@ -254,9 +242,9 @@ const addRole = async () => {
     .catch((err) => console.log(err));
 };
 
-function deleteRoleHandler() {
-  updateServer();
-  inquirer
+const deleteRoleHandler = async () => {
+  await updateServer();
+  await inquirer
     .prompt({
       type: "list",
       name: "roleList",
@@ -274,10 +262,10 @@ function deleteRoleHandler() {
         });
         updateServer();
         console.clear();
-        againHandler();
+        console.log("Role Deleted");
       }
     });
-}
+};
 
 const getAllEmployees = async () => {
   await db
@@ -386,28 +374,56 @@ const deleteEmployee = async () => {
         });
         console.clear();
         updateServer();
-        againHandler();
       }
     })
     .catch((error) => console.log(error));
 };
 
-const againHandler = () => {
-  inquirer
+const viewDeptBudget = async () => {
+  await inquirer
     .prompt([
       {
-        type: "confirm",
-        name: "again",
-        message: "Would you like to do anything else?",
+        type: "list",
+        name: "department",
+        message: "Choose a department",
+        choices: allDepartments,
       },
     ])
-    .then(({ again }) => {
-      if (again) {
-        mainMenu();
-      } else {
-        exitApp();
-      }
+    .then((answer) => {
+      const sql = `
+        SELECT SUM (salary)
+        AS "Total Salary"
+        FROM departments
+        LEFT JOIN roles
+        ON roles.department_id = departments.id
+        WHERE departments.id = ?
+        `;
+      const params = answer.department;
+      db.query(sql, params, (err, res) => {
+        if (err) throw err;
+        console.table(res);
+      });
     });
+};
+
+const againHandler = () => {
+  setTimeout(() => {
+    inquirer
+      .prompt([
+        {
+          type: "confirm",
+          name: "again",
+          message: "Would you like to do anything else?",
+        },
+      ])
+      .then(({ again }) => {
+        if (again) {
+          mainMenu();
+        } else {
+          exitApp();
+        }
+      });
+  }, 3000);
 };
 
 const exitApp = () => {
