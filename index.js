@@ -81,6 +81,7 @@ const mainMenu = () => {
           "Delete Employee",
           "Add an Employee",
           "Add a Role",
+          "Add a Department",
           "Update an Employee Role",
           "Updated an Employees Manager",
           "View Employees by Department",
@@ -120,6 +121,9 @@ const choiceHandler = async ({ options: choice }) => {
     case "Add a Role":
       await addRole();
       break;
+    case "Add a Department":
+      await addDepartmentHandler();
+      break;
     case "Update an Employee Role":
       await updateRole();
       break;
@@ -139,6 +143,32 @@ const choiceHandler = async ({ options: choice }) => {
   if (choice !== "Quit") {
     await againHandler();
   }
+};
+
+const addDepartmentHandler = async () => {
+  await inquirer
+    .prompt([
+      {
+        type: "input",
+        name: "departmentName",
+        message: "Enter a name for the Department",
+      },
+    ])
+    .then((department) => addDepartment(department))
+    .catch((err) => console.log(err));
+};
+
+const addDepartment = async ({ departmentName }) => {
+  await db
+    .promise()
+    .query(
+      `
+  INSERT INTO departments (departmentName)
+  VALUES ("${departmentName}")
+  `
+    )
+    .then(console.log("The department was added."))
+    .catch((err) => console.log(err));
 };
 
 const getAllDepartments = async () => {
