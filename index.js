@@ -32,7 +32,6 @@ const logo = `\x1b[95m
 \x1b[0m`;
 
 const updateServer = async () => {
-  console.clear();
   await db
     .promise()
     .query("SELECT * FROM departments")
@@ -79,7 +78,7 @@ const mainMenu = () => {
           "View all Roles",
           "Delete Role",
           "View All Employees",
-          "Delete an Employee",
+          "Delete Employee",
           "Add an Employee",
           "Add a Role",
           "Update an Employee Role",
@@ -109,7 +108,7 @@ const choiceHandler = async ({ options: choice }) => {
     case "Delete Role":
       await deleteRoleHandler();
       break;
-    case "View all Employees":
+    case "View All Employees":
       await getAllEmployees();
       break;
     case "Delete Employee":
@@ -243,6 +242,34 @@ const getAllEmployees = async () => {
       console.log(cTable.getTable(rows));
     })
     .catch((err) => console.log(err));
+};
+
+const deleteEmployee = async () => {
+  await updateServer();
+  inquirer
+    .prompt([
+      {
+        type: "list",
+        name: "employee",
+        message: "Choose employee to delete",
+        choices: allEmployees,
+      },
+    ])
+    .then(function (answer) {
+      if (answer.employee === "Cancel") {
+        againHandler();
+      } else {
+        const sql = `DELETE FROM employees WHERE id = ?`;
+        const params = answer.employee;
+        db.query(sql, params, (error, res) => {
+          if (error) throw error;
+        });
+        console.clear();
+        updateServer();
+        againHandler();
+      }
+    })
+    .catch((error) => console.log(error));
 };
 
 const againHandler = () => {
