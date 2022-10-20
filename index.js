@@ -182,7 +182,7 @@ const deleteDepartmentHandler = async () => {
         choices: allDepartments,
       },
     ])
-    .then(function (answer) {
+    .then((answer) => {
       if (answer.department === "Cancel") {
         againHandler();
       } else {
@@ -258,7 +258,7 @@ const deleteRoleHandler = async () => {
       message: "Choose a role to remove or choose CANCEL to cancel",
       choices: allRoles,
     })
-    .then(function (answer) {
+    .then((answer) => {
       if (answer.roleList === "Cancel") {
         mainMenu();
       } else {
@@ -374,7 +374,7 @@ const deleteEmployee = async () => {
         choices: allEmployees,
       },
     ])
-    .then(function (answer) {
+    .then((answer) => {
       if (answer.employee === "Cancel") {
         againHandler();
       } else {
