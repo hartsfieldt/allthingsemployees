@@ -1,6 +1,10 @@
 # SQL Challenge: Employee Tracker
 
-<img src="./assets/img/" alt="screenshot of employee database" height="300px"/>
+<img src="./assets/img/mainmenu.png" alt="screenshot of employee database" height="300px"/>
+<img src="./assets/img/viewdept.png" alt="screenshot of employee database" height="300px"/>
+<img src="./assets/img/viewroles.png" alt="screenshot of employee database" height="300px"/>
+<img src="./assets/img/viewdeptbudget.png" alt="screenshot of employee database" height="300px"/>
+<img src="./assets/img/deptbudget.png" alt="screenshot of employee database" height="300px"/>
 
 ## Purpose
 
@@ -22,6 +26,7 @@ GIVEN a command-line application that accepts user input. Upon starting the appl
 ## Screencastify
 
 https://drive.google.com/file/d/1Q6yH3UDsjyU5sohQf9VFCbBZvzp565zc/view
+
 ## Website
 
 https://hartsfieldt.github.io/allthingsemployees/
