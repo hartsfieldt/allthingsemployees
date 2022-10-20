@@ -66,7 +66,6 @@ const updateServer = async () => {
 };
 
 const mainMenu = () => {
-  console.clear();
   console.log(`${logo}`);
   inquirer
     .prompt([
@@ -194,7 +193,6 @@ const getAllRoles = async () => {
       console.log(cTable.getTable(rows));
     })
     .catch((err) => console.log(err));
-  await againHandler(); // making a duplicate
 };
 
 function deleteRoleHandler() {
@@ -221,6 +219,31 @@ function deleteRoleHandler() {
       }
     });
 }
+
+const getAllEmployees = async () => {
+  await db
+    .promise()
+    .query(
+      `
+      SELECT
+      CONCAT(e.first_name,' ',e.last_name) AS Employee,
+      roles.title AS Title,
+      roles.salary as Salary,
+      CONCAT(m.first_name,' ',m.last_name) AS Manager,
+      departments.departmentName AS Department
+      FROM employees e
+      LEFT JOIN roles
+      ON roles.id = e.role_id
+      LEFT JOIN departments
+      ON roles.department_id = departments.id
+      LEFT JOIN employees m ON e.manager_id = m.id;
+    `
+    )
+    .then(([rows]) => {
+      console.log(cTable.getTable(rows));
+    })
+    .catch((err) => console.log(err));
+};
 
 const againHandler = () => {
   inquirer
