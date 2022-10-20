@@ -1,6 +1,5 @@
 const inquirer = require("inquirer");
 const cTable = require("console.table");
-const mysql = require("mysql2");
 const db = require("./db/connection");
 let allDepartments;
 let allRoles;
@@ -65,6 +64,7 @@ const updateServer = async () => {
 };
 
 const mainMenu = () => {
+  console.clear();
   console.log(`${logo}`);
   inquirer
     .prompt([
@@ -134,6 +134,7 @@ const choiceHandler = async ({ options: choice }) => {
 };
 
 const addDepartmentHandler = async () => {
+  console.clear();
   await inquirer
     .prompt([
       {
@@ -147,6 +148,7 @@ const addDepartmentHandler = async () => {
 };
 
 const addDepartment = async ({ departmentName }) => {
+  console.clear();
   await db
     .promise()
     .query(
@@ -160,6 +162,7 @@ const addDepartment = async ({ departmentName }) => {
 };
 
 const getAllDepartments = async () => {
+  console.clear();
   await db
     .promise()
     .query(`SELECT id AS 'ID', departmentName AS 'Department' FROM departments`)
@@ -168,6 +171,7 @@ const getAllDepartments = async () => {
 };
 
 const deleteDepartmentHandler = async () => {
+  console.clear();
   await updateServer();
   inquirer
     .prompt([
@@ -196,6 +200,7 @@ const deleteDepartmentHandler = async () => {
 };
 
 const getAllRoles = async () => {
+  console.clear();
   await db
     .promise()
     .query(
@@ -213,6 +218,7 @@ const getAllRoles = async () => {
 };
 
 const addRole = async () => {
+  console.clear();
   await inquirer
     .prompt([
       {
@@ -243,6 +249,7 @@ const addRole = async () => {
 };
 
 const deleteRoleHandler = async () => {
+  console.clear();
   await updateServer();
   await inquirer
     .prompt({
@@ -252,7 +259,7 @@ const deleteRoleHandler = async () => {
       choices: allRoles,
     })
     .then(function (answer) {
-      if (answer.roleList === "CANCEL") {
+      if (answer.roleList === "Cancel") {
         mainMenu();
       } else {
         const sql = `DELETE FROM roles WHERE id = ?`;
@@ -268,6 +275,7 @@ const deleteRoleHandler = async () => {
 };
 
 const getAllEmployees = async () => {
+  console.clear();
   await db
     .promise()
     .query(
@@ -293,6 +301,7 @@ const getAllEmployees = async () => {
 };
 
 const addEmployee = async () => {
+  console.clear();
   await inquirer
     .prompt([
       {
@@ -327,6 +336,7 @@ const addEmployee = async () => {
 };
 
 const updateMgr = async () => {
+  console.clear();
   await inquirer
     .prompt([
       {
@@ -353,6 +363,7 @@ const updateMgr = async () => {
 };
 
 const deleteEmployee = async () => {
+  console.clear();
   await updateServer();
   inquirer
     .prompt([
@@ -380,6 +391,7 @@ const deleteEmployee = async () => {
 };
 
 const viewDeptBudget = async () => {
+  console.clear();
   await inquirer
     .prompt([
       {
